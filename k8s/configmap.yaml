@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: api-config
 data:
-  DB_PATH: "/data/database.db"
+  DB_PATH: "database.db"

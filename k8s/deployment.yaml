@@ -15,17 +15,17 @@ spec:
       containers:
         - name: flask-sqlite-api
           image: flask-sqlite-api:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 5000
           envFrom:
             - configMapRef:
                 name: api-config
-          volumeMounts:
-            - mountPath: /data
-              name: data-volume
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
       serviceAccountName: flask-api-sa
-      volumes:
-        - name: data-volume
-          hostPath:
-            path: app\database.db
-            type: Directory
