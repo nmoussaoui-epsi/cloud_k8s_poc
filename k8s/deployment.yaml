@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-sqlite-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-sqlite-api
+  template:
+    metadata:
+      labels:
+        app: flask-sqlite-api
+    spec:
+      containers:
+        - name: flask-sqlite-api
+          image: flask-sqlite-api:latest
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: api-config
+          volumeMounts:
+            - mountPath: /data
+              name: data-volume
+      volumes:
+        - name: data-volume
+          hostPath:
+            path: app\database.db
+            type: Directory
