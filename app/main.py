@@ -1,0 +1,39 @@
+from flask import Flask, jsonify
+import sqlite3
+import os
+import time
+
+app = Flask(__name__)
+
+# Charger les variables d'env envoyées par le ConfigMap K8s
+DB_PATH = os.getenv("DB_PATH", "database.db")
+
+@app.route("/read_db", methods=["GET"])
+def read_db():
+    """
+    Lit tous les utilisateurs dans la table users de la BDD SQLite.
+    Retourne le résultat sous forme de JSON.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT id, name FROM users")
+        rows = cursor.fetchall()
+        data = [{"id": row[0], "name": row[1]} for row in rows]
+    except Exception as e:
+        data = {"error": str(e)}
+    conn.close()
+    return jsonify(data)
+
+@app.route("/cpu_load", methods=["GET"])
+def cpu_load():
+    """
+    Lance une boucle qui utilise le CPU pendant 3 minutes (pour tester le scaling auto).
+    """
+    start_time = time.time()
+    while time.time() - start_time < 180:
+        _ = sum(i*i for i in range(10000))
+    return jsonify({"status": "CPU load simulated for 3 minutes"})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
