@@ -23,6 +23,7 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: data-volume
+      serviceAccountName: flask-api-sa
       volumes:
         - name: data-volume
           hostPath:
