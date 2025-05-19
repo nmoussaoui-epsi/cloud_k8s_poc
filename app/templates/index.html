@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>API Flask</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Bienvenue sur l'API Flask + SQLite</h1>
+    <button onclick="callEndpoint('/read_db')">Lire la base de données</button>
+    <button onclick="callEndpoint('/cpu_load')">Charger le CPU (3 min)</button>
+
+    <div id="output"></div>
+
+    <div class="loader" id="loader">
+      <div class="wrapper">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+        <div class="shadow"></div>
+      </div>
+    </div>
+
+    <script>
+      function callEndpoint(endpoint) {
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("output").innerText = "";
+
+        fetch(endpoint)
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("output").innerText = JSON.stringify(
+              data,
+              null,
+              2
+            );
+          })
+          .catch((err) => {
+            document.getElementById("output").innerText = "Erreur : " + err;
+          })
+          .finally(() => {
+            document.getElementById("loader").style.display = "none";
+          });
+      }
+    </script>
+  </body>
+</html>
